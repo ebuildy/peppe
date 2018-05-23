@@ -9,6 +9,7 @@ nltk = "*"
 whoosh = "*"
 flask = "*"
 "94cd631" = {path = "./fastText"}
+flask-restplus = "*"
 
 [dev-packages]
 

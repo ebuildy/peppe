@@ -1,6 +1,8 @@
 ## Installation
 
-``pipenv install``
+    pipenv install
+    pipenv shell
+
 
 ## Usage
 

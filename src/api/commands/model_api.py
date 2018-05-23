@@ -1,12 +1,18 @@
 import glob, os, fastText
 
+from whoosh.analysis import CharsetFilter, StemmingAnalyzer
+from whoosh import fields
+from whoosh.support.charset import accent_map
+
+from flask import abort
+
 def _load_model(modelName):
     modelFilePath = "./models/" + modelName + ".bin"
 
     if os.path.isfile(modelFilePath):
         return fastText.load_model(modelFilePath)
     else:
-        raise NameError("Model not found!")
+        raise abort(404, "Model not found!")
 
 def call(modelName):
     model = _load_model(modelName)
@@ -40,14 +46,29 @@ def words(modelName):
 def predict(modelName, text):
     model = _load_model(modelName)
 
-    l_labels,l_probs = model.predict(text)
+    my_analyzer = StemmingAnalyzer() | CharsetFilter(accent_map)
 
-    ret = []
+    tokens = my_analyzer(text.strip())
 
-    for i in range(len(l_labels[0])):
-        ret.append([l_labels[0][i].replace("__label__",""),l_probs[0][i]])
+    words = [token.text for token in tokens]
 
-    return ret
+    sentence = ' '.join(words)
+
+    l_labels,l_probs = model.predict(sentence)
+
+    print(l_labels)
+    print(l_probs)
+
+    ret = {}
+
+    for i in range(len(l_labels)):
+        if i < len(l_probs):
+            ret[l_labels[i].replace("__label__","")] = l_probs[i]
+
+    return {
+        'sentence' : sentence,
+        'labels' : ret
+    }
 
 def cat_models():
     ret = []
