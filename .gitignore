@@ -1,2 +1,2 @@
-models
-fastText
+models/*
+fasttext
