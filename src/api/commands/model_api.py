@@ -4,15 +4,22 @@ from whoosh.analysis import CharsetFilter, StemmingAnalyzer
 from whoosh import fields
 from whoosh.support.charset import accent_map
 
+from datetime import datetime
+
 from flask import abort
 
-def _load_model(modelName):
+_g_models = {}
+
+def _load_model(modelName, force=False):
     modelFilePath = "./models/" + modelName + ".bin"
 
-    if os.path.isfile(modelFilePath):
-        return fastText.load_model(modelFilePath)
-    else:
-        raise abort(404, "Model not found!")
+    if modelName not in _g_models or force:
+        if os.path.isfile(modelFilePath):
+            _g_models[modelName] = fastText.load_model(modelFilePath)
+        else:
+            raise abort(404, "Model not found!")
+
+    return _g_models[modelName]
 
 def call(modelName):
     model = _load_model(modelName)
@@ -43,6 +50,11 @@ def words(modelName):
 
     return list(model.get_words())
 
+def reload(modelName):
+    _load_model(modelName, True)
+
+    return 'ok'
+
 def predict(modelName, text):
     model = _load_model(modelName)
 
@@ -54,10 +66,13 @@ def predict(modelName, text):
 
     sentence = ' '.join(words)
 
+    a = datetime.now()
+
     l_labels,l_probs = model.predict(sentence, 10)
 
-    print(l_labels)
-    print(l_probs)
+    b = datetime.now()
+
+    delta = b - a
 
     ret = {}
 
@@ -66,6 +81,7 @@ def predict(modelName, text):
             ret[l_labels[i].replace("__label__","")] = l_probs[i]
 
     return {
+        'took' : delta.microseconds,
         'sentence' : sentence,
         'labels' : ret
     }

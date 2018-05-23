@@ -45,6 +45,13 @@ class ModelLabels(Resource):
     def get(self, model):
         return model_api.labels(model)
 
+@api.route("/<model>/_reload")
+@api.param('model', 'the model identifier')
+@api.response(404, 'model not found')
+class ModelReload(Resource):
+    def get(self, model):
+        return model_api.reload(model)
+
 @api.route("/<model>")
 @api.param('model', 'the model identifier')
 @api.response(404, 'model not found')
