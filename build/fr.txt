@@ -1,0 +1,11 @@
+__label__fr_ok bonjour
+__label__fr_ok salut
+__label__fr_ok comment tu vas ?
+__label__fr_ok ça va ?
+__label__fr_ok ça biche ?
+__label__fr_ok ça roule ?
+__label__fr_ok ça gaz ?
+__label__fr_ok t'es bien roulé
+__label__fr_spam petite salope
+__label__fr_spam je vais te faire le cul
+__label__fr_spam salope
