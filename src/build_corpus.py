@@ -10,7 +10,7 @@ def main(args):
     for filename in glob.glob(args.dir + "/*.txt"):
         with open(filename, 'r') as readfile:
             infile = readfile.readlines()
-            label = "__label__" + os.path.splitext(os.path.basename(readfile.name))[0] + " "
+            label = ("__label__" + os.path.splitext(os.path.basename(readfile.name))[0] + " ") if args.add_label else '';
             for line in infile:
                 tokens = my_analyzer(line.strip())
                 words = [token.text for token in tokens]
@@ -24,6 +24,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Build corpus.')
 
     parser.add_argument('dir', type=str, help='directory')
+    parser.add_argument('--add-label', const=True, action='store_const', help='add filename as label')
 
     args = parser.parse_args()
 

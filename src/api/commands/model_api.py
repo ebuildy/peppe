@@ -54,7 +54,7 @@ def predict(modelName, text):
 
     sentence = ' '.join(words)
 
-    l_labels,l_probs = model.predict(sentence)
+    l_labels,l_probs = model.predict(sentence, 10)
 
     print(l_labels)
     print(l_probs)
