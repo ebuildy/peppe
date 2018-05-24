@@ -1,2 +1,4 @@
 models/*
 fasttext
+src/corpus/*
+build/*
